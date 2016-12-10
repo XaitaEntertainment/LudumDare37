@@ -48,6 +48,8 @@ void Engine::DeInit()
 void Engine::LoadResource()
 {
     LoadTexture(m_textureFloor, TEXTURE_PATH "checker.png");
+	LoadTexture(m_textureCross, TEXTURE_PATH "cross.bmp");
+	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
 }
 
 void Engine::UnloadResource()
@@ -81,6 +83,12 @@ void Engine::Render(float elapsedTime)
     glTexCoord2f(0, nbRep);
     glVertex3f(-100.f, -2.f, -100.f);
     glEnd();
+
+	if (m_wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	DrawHub(elapsedTime);
+	if (m_wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Engine::KeyPressEvent(unsigned char key)
@@ -146,4 +154,87 @@ bool Engine::LoadTexture(Texture& texture, const std::string& filename, bool sto
     }
 
     return true;
+}
+
+void Engine::DrawHub(float elapsedTime)
+{
+	// Setter le blend function, tout ce qui sera noir sera transparent
+	glDisable(GL_LIGHTING);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glEnable(GL_BLEND);
+
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, Width(), 0, Height(), -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	// Bind de la texture pour le font
+	m_textureFont.Bind();
+
+	std::ostringstream ss;
+	ss << "Fps: " << (int)GetFps(elapsedTime);
+	PrintText(10, Height() - 25, ss.str());
+
+	ss.str("");
+
+	// Affichage du crosshair
+	m_textureCross.Bind();
+	static const int crossSize = 32;
+	glLoadIdentity();
+	glTranslated(Width() / 2 - crossSize / 2, Height() / 2 - crossSize / 2, 0);
+	glBegin(GL_QUADS);
+
+	glTexCoord2f(0, 0);
+	glVertex2i(0, 0);
+	glTexCoord2f(1, 0);
+	glVertex2i(crossSize, 0);
+	glTexCoord2f(1, 1);
+	glVertex2i(crossSize, crossSize);
+	glTexCoord2f(0, 1);
+	glVertex2i(0, crossSize);
+	glEnd();
+
+	glEnable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+void Engine::PrintText(unsigned int x, unsigned int y, const std::string& t)
+{
+	glLoadIdentity();
+	glTranslated(x, y, 0);
+	for (unsigned int i = 0; i < t.length(); ++i)
+	{
+		float left = (float)((t[i] - 32) % 16) / 16.0f;
+		float top = (float)((t[i] - 32) / 16) / 16.0f;
+
+		top += 0.5f;
+
+		glBegin(GL_QUADS);
+		glTexCoord2f(left, 1.0f - top - 0.0625f);
+		glVertex2f(0, 0);
+		glTexCoord2f(left + 0.0625f, 1.0f - top - 0.0625f);
+		glVertex2f(12, 0);
+		glTexCoord2f(left + 0.0625f, 1.0f - top);
+		glVertex2f(12, 12);
+		glTexCoord2f(left, 1.0f - top);
+		glVertex2f(0, 12);
+		glEnd();
+
+		glTranslated(8, 0, 0);
+	}
+}
+
+double Engine::GetFps(float elapsedTime)
+{
+	double fps = 1 / elapsedTime;
+	return fps;
 }

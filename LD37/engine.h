@@ -3,6 +3,7 @@
 #include "define.h"
 #include "openglcontext.h"
 #include "texture.h"
+#include "transformation.h"
 
 class Engine : public OpenglContext
 {
@@ -19,6 +20,9 @@ public:
     virtual void MouseMoveEvent(int x, int y);
     virtual void MousePressEvent(const MOUSE_BUTTON &button, int x, int y);
     virtual void MouseReleaseEvent(const MOUSE_BUTTON &button, int x, int y);
+	void DrawHub(float elapsedTime);
+	void PrintText(unsigned int x, unsigned int y, const std::string& t);
+	double GetFps(float elapsedTime);
 
 private:
     bool LoadTexture(Texture& texture, const std::string& filename, bool stopOnError = true);
@@ -27,6 +31,8 @@ private:
     bool m_wireframe = false;
 
     Texture m_textureFloor;
+	Texture m_textureCross;
+	Texture m_textureFont;
 
     bool m_keyW = false;
     bool m_keyA = false;
