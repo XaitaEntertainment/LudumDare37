@@ -47,7 +47,6 @@ void Engine::DeInit()
 
 void Engine::LoadResource()
 {
-    LoadTexture(m_textureFloor, TEXTURE_PATH "checker.png");
 	LoadTexture(m_textureCross, TEXTURE_PATH "cross.bmp");
 	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
 }
@@ -68,21 +67,6 @@ void Engine::Render(float elapsedTime)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Plancher
-    // Les vertex doivent etre affiches dans le sens anti-horaire (CCW)
-    m_textureFloor.Bind();
-    float nbRep = 50.f;
-    glBegin(GL_QUADS);
-    glNormal3f(0, 1, 0); // Normal vector
-    glTexCoord2f(0, 0);
-    glVertex3f(-100.f, -2.f, 100.f);
-    glTexCoord2f(nbRep, 0);
-    glVertex3f(100.f, -2.f, 100.f);
-    glTexCoord2f(nbRep, nbRep);
-    glVertex3f(100.f, -2.f, -100.f);
-    glTexCoord2f(0, nbRep);
-    glVertex3f(-100.f, -2.f, -100.f);
-    glEnd();
 
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

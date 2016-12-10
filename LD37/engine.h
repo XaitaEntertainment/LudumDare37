@@ -30,7 +30,6 @@ private:
 private:
     bool m_wireframe = false;
 
-    Texture m_textureFloor;
 	Texture m_textureCross;
 	Texture m_textureFont;
 
