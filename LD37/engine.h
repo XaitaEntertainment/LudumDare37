@@ -23,6 +23,7 @@ public:
 	void DrawHub(float elapsedTime);
 	void PrintText(unsigned int x, unsigned int y, const std::string& t);
 	double GetFps(float elapsedTime);
+	void DrawBackground();
 
 private:
     bool LoadTexture(Texture& texture, const std::string& filename, bool stopOnError = true);
@@ -32,11 +33,14 @@ private:
 
 	Texture m_textureCross;
 	Texture m_textureFont;
+	Texture m_background;
 
     bool m_keyW = false;
     bool m_keyA = false;
     bool m_keyS = false;
     bool m_keyD = false;
+
+	//Level m_level;
 };
 
 #endif // ENGINE_H__

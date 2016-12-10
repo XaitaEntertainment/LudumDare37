@@ -49,6 +49,7 @@ void Engine::LoadResource()
 {
 	LoadTexture(m_textureCross, TEXTURE_PATH "cross.bmp");
 	LoadTexture(m_textureFont, TEXTURE_PATH "font.bmp");
+	LoadTexture(m_background, TEXTURE_PATH "redback.png");
 }
 
 void Engine::UnloadResource()
@@ -67,6 +68,12 @@ void Engine::Render(float elapsedTime)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+	
+
+	
+	
+
+	//DrawBackground();
 
 	if (m_wireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -143,10 +150,7 @@ bool Engine::LoadTexture(Texture& texture, const std::string& filename, bool sto
 void Engine::DrawHub(float elapsedTime)
 {
 	// Setter le blend function, tout ce qui sera noir sera transparent
-	glDisable(GL_LIGHTING);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	glEnable(GL_BLEND);
+	
 
 	glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
@@ -155,6 +159,16 @@ void Engine::DrawHub(float elapsedTime)
 	glOrtho(0, Width(), 0, Height(), -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
+
+	
+
+	glDisable(GL_LIGHTING);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	DrawBackground();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glEnable(GL_BLEND);
+
+	
 
 	// Bind de la texture pour le font
 	m_textureFont.Bind();
@@ -181,6 +195,8 @@ void Engine::DrawHub(float elapsedTime)
 	glTexCoord2f(0, 1);
 	glVertex2i(0, crossSize);
 	glEnd();
+
+	
 
 	glEnable(GL_LIGHTING);
 	glDisable(GL_BLEND);
@@ -221,4 +237,20 @@ double Engine::GetFps(float elapsedTime)
 {
 	double fps = 1 / elapsedTime;
 	return fps;
+}
+
+void Engine::DrawBackground()
+{
+	m_background.Bind();
+	glBegin(GL_QUADS);
+
+	glTexCoord2f(0, 0);
+	glVertex2i(0, 0);
+	glTexCoord2f(1, 0);
+	glVertex2i(800, 0);
+	glTexCoord2f(1, 1);
+	glVertex2i(800, 600);
+	glTexCoord2f(0, 1);
+	glVertex2i(0, 600);
+	glEnd();
 }
